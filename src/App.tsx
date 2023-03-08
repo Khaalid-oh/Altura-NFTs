@@ -18,7 +18,7 @@ import Modal from "./components/organisms/Modal";
 
 const App = () => {
   const settings = {
-    apiKey: ALCHEMY_ACCESS_KEY,
+    apiKey: 'sJ-f1WuYtZslbLac8DVW3k7OiM7xgxq0',
     network: Network.ETH_MAINNET,
   };
 
