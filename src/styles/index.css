@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: "Sf Pro";
+    src: url("/sf-pro-font/SF-Pro-Display-Bold.ttf") format("truetype");
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  html,
+  body {
+    font-family: "Poppins", sans-serif;
+    scroll-behavior: smooth !important;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: #a5a5b2 !important;
+    /* -webkit-box-shadow: 0 0 0 30px #16162d inset !important; */
+  }
+
+  /* .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  } */
+  /* .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  } */
+}
+
+@layer components {
+  @media only screen and (max-width: 1536px) {
+    :root {
+      font-size: 16px;
+    }
+  }
+
+  @media only screen and (min-width: 1536px) {
+    :root {
+      font-size: 16px;
+    }
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  span,
+  h1,
+  p {
+    user-select: none;
+  }
+  img {
+    max-width: 100%;
+  }
+
+  input {
+    @apply outline-none py-3 flex-1 text-lg bg-transparent;
+  }
+
+  .input-wrapper {
+    @apply flex border items-center bg-white pl-4 pr-2 rounded-lg gap-x-2 w-full;
+  }
+
+  @keyframes donut-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .main-container {
+    @apply flex flex-col h-screen overflow-hidden;
+  }
+
+  .sub-main-container {
+    @apply flex-1 overflow-auto flex flex-col bg-[#F7F9FB] pt-8 pb-6 gap-y-8;
+  }
+
+  .search-container {
+    @apply overflow-hidden flex items-center w-full mx-auto max-w-[60%] gap-x-4;
+  }
+
+  .single-nft-container {
+    @apply flex flex-col gap-y-4;
+  }
+
+  .btn {
+    @apply bg-[#5611e2] hover:bg-[#3D00B7] py-3 px-[2.5rem] text-white font-medium rounded-lg text-lg flex-1 grid place-content-center whitespace-nowrap;
+  }
+
+  .btn-loader {
+    @apply inline-block border-[0.25rem] rounded-full w-7 h-7;
+
+    animation: donut-spin 1s linear infinite;
+  }
+
+  .btn-loader-primary {
+    @apply border-b-[#3D00B7] border-[#ffffff];
+  }
+
+  .card-display {
+    @apply flex-1 overflow-auto overflow-x-hidden grid gap-8 justify-between px-4;
+  }
+  .general-disp {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  .modal-container {
+    @apply fixed inset-0 justify-center items-center;
+  }
+  .modal {
+    @apply bg-white rounded-lg pt-4 pb-8 px-4 h-full w-full z-10 flex flex-col overflow-hidden;
+  }
+  .modal-heading {
+    @apply text-[#093D5E] text-xl border-b pb-4;
+  }
+}
