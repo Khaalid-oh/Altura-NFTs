@@ -15,36 +15,60 @@ import NFTCard from "./components/molecules/NFTCard";
 import { ALCHEMY_ACCESS_KEY } from "./utils/config";
 import NFTSkeletonLoader from "./components/molecules/NFTSkeletonLoader";
 import Modal from "./components/organisms/Modal";
+import How from "./How";
+import Footer from "./Footer";
 
 const App = () => {
-  const settings = {
-    apiKey: 'sJ-f1WuYtZslbLac8DVW3k7OiM7xgxq0',
-    network: Network.ETH_MAINNET,
-  };
-
-  const alchemy = new Alchemy(settings);
   const [nfts, setNfts] = useState<INFTResponse>(null);
   const [nft, setNft] = useState<NFT | null>(null);
   const [walletAddress, setWalletAddress] = useState("");
   const [error, setError] = useState<string | null>("");
   const [isFetching, setIsFetching] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showComponent, setShowComponent] = useState(true);
+  
 
+
+  const settings = {
+    apiKey: ALCHEMY_ACCESS_KEY,
+    network: Network.ETH_MAINNET,
+  };
+
+  const alchemy = new Alchemy(settings);
+
+  /**
+   * A function that updates the state value of the wallet address input field.
+   *
+   * @param {ChangeEvent<HTMLInputElement>} e The change event triggered by the input field.
+   * @returns {void}
+   */
   const handleInputField = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setWalletAddress(value);
   }, []);
 
+  /**
+   * A function that clears the state value of the wallet address input field.
+   *
+   * @returns {void}
+   */
   const handleClearInput = useCallback(() => {
     setWalletAddress("");
   }, []);
 
+  /**
+   * A function that handles the submission of the wallet address input field, fetches the associated NFTs,
+   * and updates the state values accordingly.
+   *
+   * @returns {Promise<void>}
+   */
   const handleSubmit = useCallback(async () => {
+    setShowComponent((prev) => !prev);
     setIsFetching((prev) => !prev);
     const trimAdress = walletAddress.trim();
 
     if (!walletAddress) {
-      handleError("You wallet address is misssing", setError);
+      handleError("Your wallet address is missing", setError);
       setNfts(null);
       setIsFetching((prev) => !prev);
       return;
@@ -52,7 +76,7 @@ const App = () => {
 
     const verifyAddress = isValidContractAddress(trimAdress);
     if (!verifyAddress) {
-      handleError("You wallet address is invalid", setError);
+      handleError("Your wallet address is invalid", setError);
       setWalletAddress("");
       setIsFetching((prev) => !prev);
       return;
@@ -67,6 +91,12 @@ const App = () => {
     }
   }, [walletAddress]);
 
+  /**
+   * A function that displays the details of a specific NFT in a modal.
+   *
+   * @param {NFT} nft The NFT to display.
+   * @returns {void}
+   */
   const handleDisplayNFT = useCallback(
     (nft: NFT) => {
       setNft(nft);
@@ -74,6 +104,10 @@ const App = () => {
     },
     [showModal]
   );
+
+  const handleShowComponent = () => {
+      setShowComponent(false);
+    };
 
   return (
     <div className="main-container">
@@ -92,6 +126,7 @@ const App = () => {
               title="Fetch Nft"
               handleSubmit={handleSubmit}
               isLoading={isFetching}
+              
             />
           </div>
         </div>
@@ -99,7 +134,9 @@ const App = () => {
           <p className="text-center text-red-700 w-full">{error}</p>
         ) : //@ts-ignore
         nfts !== null && nfts.length === 0 ? (
-          <p className="text-center">There is no NFTs in this collection</p>
+          <p className="text-center">
+            Please enter a collection address created on Ethereum Chainlink.
+          </p>
         ) : null}
         <div
           className={clsx(
@@ -111,6 +148,8 @@ const App = () => {
               : ""
           )}
         >
+          {showComponent &&  <How />}
+
           {isFetching
             ? Array(16)
                 .fill("")
@@ -132,56 +171,73 @@ const App = () => {
         handleCloseModal={setShowModal}
         closeModal={showModal}
         modalTitle={
-          nft !== null
-            ? shortText(nft.title) || shortText(nft.contract.name)
-            : ""
+          shortText(nft?.title as string) ||
+          shortText(nft?.contract?.name as string)
         }
       >
-        {nft !== null ? (
+        {
           <div className="single-nft-container">
-            <div className="flex gap-x-4">
-              <div className="flex flex-col gap-y-2">
-                <div className="w-full h-[20rem]">
+            <div className="grid lg:grid-cols-[60%_40%] gap-x-4">
+              <div className="flex flex-col gap-y-2 lg:w-full">
+                <div className="w-full h-auto">
                   <img
                     src={
-                      nft.media[0] !== undefined
-                        ? nft.media[0].gateway
-                        : nft.contract.openSea.imageUrl
+                      nft?.media[0]?.gateway ||
+                      nft?.contract.openSea.imageUrl ||
+                      "/nft-placeholder.webp"
                     }
-                    alt={nft.title || "nft-image"}
+                    alt={nft?.title || "nft-image"}
                     className="w-full h-full"
                   />
                 </div>
+
                 <div className="flex flex-col">
-                  <span className="text-xs font-semibold">Owned by:</span>
-                  <span className="text-sm">{nft.contract.address}</span>
+                  <span className="text-xs font-semibold">
+                    Collection Address:
+                  </span>
+                  <span className="text-sm">{nft?.contract?.address}</span>
                 </div>
               </div>
-              <div className=" flex flex-col gap-y-4 pr-2">
+              <div className="flex flex-col gap-y-4 pr-2">
                 <h1 className="text-sm text-[#3D00B7]">
-                  {shortText(nft.contract.openSea.collectionName) ||
-                    shortText(nft.contract.name)}
+                  {shortText(
+                    nft?.contract?.openSea?.collectionName as string
+                  ) || shortText(nft?.contract?.name as string)}
                 </h1>
-                <h1 className="text-2xl font-semibold">
-                  {shortText(nft.rawMetadata.name)}
+                <h1 className="xl:text-3xl font-semibold">
+                  {shortText(nft?.rawMetadata?.name as string) ||
+                    shortText(nft?.contract?.name as string) +
+                      "#" +
+                      nft?.tokenId}
                 </h1>
                 <div className="flex gap-x-2">
-                  <div className="flex flex-col px-2 py-2 border border-[#3D00B7] rounded-md max-w-max">
+                  <div className="flex flex-col items-center px-2 py-2 border border-[#3D00B7] rounded-md max-w-max">
                     <span className="text-xs text-[#3D00B7]">Token Type</span>
                     <span className="text-sm font-semibold">
-                      {nft.tokenType}
+                      {nft?.tokenType}
                     </span>
                   </div>
 
-                  <div className="flex flex-col px-2 py-2 border border-[#3D00B7] rounded-md max-w-max">
-                    <span className="text-xs text-[#3D00B7]">Total Supply</span>
-                    <span className="text-sm font-semibold">
-                      {nft.contract.totalSupply}
-                    </span>
-                  </div>
+                  {nft?.contract?.totalSupply ? (
+                    <div className="flex flex-col items-center px-2 py-2 border border-[#3D00B7] rounded-md max-w-max">
+                      <span className="text-xs text-[#3D00B7]">
+                        Total Supply
+                      </span>
+                      <span className="text-sm font-semibold">
+                        {nft?.contract?.totalSupply}
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
+                <p className="pr-2">
+                  {shortText(
+                    nft?.contract?.openSea?.description as string,
+                    110
+                  )}
+                </p>
                 <a
-                  href={`https://opensea.io/assets/ethereum/${walletAddress}/${nft.tokenId}`}
+                  href={`https://opensea.io/assets/ethereum/${nft?.contract.address}/${nft?.tokenId}`}
+                  target="_blank"
                 >
                   <Button title="Purchase NFT" />
                 </a>
@@ -190,27 +246,23 @@ const App = () => {
             <div>
               <h3 className="text-sm font-medium mb-1">Attributes:</h3>
               <div className="flex flex-wrap gap-y-3 gap-x-2 w-full pr-2">
-                {nft.rawMetadata.attributes.length > 0
-                  ? nft.rawMetadata.attributes.map((attr, i) => (
-                      <div
-                        className="flex flex-col items-center p-2 bg-[#263aed13] rounded-md"
-                        key={"NFT-Attribute" + i}
-                      >
-                        <span className="text-xs text-[#3D00B7]">
-                          {attr.trait_type}
-                        </span>
-                        <span className="text-xs font-medium">
-                          {attr.value}
-                        </span>
-                      </div>
-                    ))
-                  : null}
+                {nft?.rawMetadata?.attributes?.map((attr, i) => (
+                  <div
+                    className="flex flex-col items-center p-2 bg-[#263aed13] rounded-md"
+                    key={"NFT-Attribute" + i}
+                  >
+                    <span className="text-xs text-[#3D00B7]">
+                      {attr.trait_type}
+                    </span>
+                    <span className="text-xs font-medium">{attr.value}</span>
+                  </div>
+                )) || "This NFT does not have any attributes"}
               </div>
             </div>
-            {/*NFT Info*/}
           </div>
-        ) : null}
+        }
       </Modal>
+      <Footer />
     </div>
   );
 };

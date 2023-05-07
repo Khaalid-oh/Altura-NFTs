@@ -1,7 +1,7 @@
 const Button = ({
   title,
   handleSubmit,
-  isLoading,
+  isLoading, 
 }: {
   title: string;
   handleSubmit?: () => void;
