@@ -123,7 +123,7 @@ const App = () => {
             className={clsx("w-[25%] flex", isFetching ? "" : "justify-center")}
           >
             <Button
-              title="Fetch Nft"
+              title="Fetch NFT"
               handleSubmit={handleSubmit}
               isLoading={isFetching}
               
