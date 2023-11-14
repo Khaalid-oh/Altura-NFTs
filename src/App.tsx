@@ -21,7 +21,9 @@ import Footer from "./Footer";
 const App = () => {
   const [nfts, setNfts] = useState<INFTResponse>(null);
   const [nft, setNft] = useState<NFT | null>(null);
-  const [walletAddress, setWalletAddress] = useState("");
+  const [walletAddress, setWalletAddress] = useState(
+    "0xED5AF388653567Af2F388E6224dC7C4b3241C544"
+  );
   const [error, setError] = useState<string | null>("");
   const [isFetching, setIsFetching] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -35,6 +37,7 @@ const App = () => {
   };
 
   const alchemy = new Alchemy(settings);
+  
 
   /**
    * A function that updates the state value of the wallet address input field.

@@ -15,7 +15,7 @@ function How() {
             </p>
           </div>
           <div className="flex flex-col justify-center items-center gap-2 ">
-            <h2 className="text-xl text-[#3D00B7]">How it works</h2>
+            <h2 className="text-xl text-[#3D00B7] underline">How it works</h2>
             <div className="flex flex-col gap-4">
               <div className="bg-violet-200 rounded-xl p-2 md:w-1/2">
                 <p className="text-[#3D00B7]">01.</p>
